@@ -1,17 +1,9 @@
 <template>
     <main class="container_fluid bg_main">
      <section  v-if='!loading'>
-            <div class="container w-90">
+            <div class="container w-100">
             <div class="row row-cols-5 p-4 gy-4 h-100">
-                <SongList :song= 'album' v-for="(album, index) in albums" :key="index"/>
-       <!--         <div class="col d-flex align-items-center text-center h-100" v-for="(album, index) in albums" :key="index">
-                    <div class="card bg_header p-3">
-                        <img class="img-fluid" :src="album.poster" alt="">
-                        <h6 class="text-white mt-3 lh-0">{{album.title}}</h6>
-                        <p class="text-muted m-0">{{album.author}}</p>
-                        <p class="text-muted m-0">{{album.year}}</p>
-                    </div>
-                </div> -->
+                <SongList :song= 'album' v-for="(album, index) in albumsSelected" :key="index"/>
             </div>
         </div>
     </section>
@@ -24,6 +16,7 @@
 <script>
 import SongList from '@/components/SongListComponent.vue';
 import axios from "axios"; 
+import state from "@/state";
 
 export default {
      name: "SiteMainComponent",
@@ -48,18 +41,36 @@ export default {
              this.albums = response.data.response;
              this.loading = false;
          })
-     }
- }
+     },
+     computed: {
+        albumsSelected(){
+            if(state.selectedGenre) {
+                    console.log(this.albums);
+        return this.albums.filter(album =>{
+            return album.genre.toLowerCase().includes(state.selectedGenre.toLowerCase())
+         })
+            } else {
+                return this.albums
+            }
+        
+       }
+    }
+        
+}
 
 
 </script>
 
 <style lang='scss' scoped>
+
     .container_fluid {
-        height: calc(100% - 80px);
+         min-height: 800px;
+        
         h2 {
             text-align: center;
             color: white;
+            font-size: 50px;
+            padding-top: 100px;
         }
     }
 
